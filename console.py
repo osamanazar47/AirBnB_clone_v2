@@ -141,6 +141,14 @@ class HBNBCommand(cmd.Cmd):
                 pass
         print(kwargs)
 
+        # Create instance with provided kwargs
+        try:
+            new_instance = HBNBCommand.classes[class_name](kwargs)
+            new_instance.save()
+            print(new_instance.id)
+        except Exception as e:
+            print("** Error creating instance:", e)
+
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")

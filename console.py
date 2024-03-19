@@ -122,23 +122,24 @@ class HBNBCommand(cmd.Cmd):
         parts = args.split()  # Split arguments by spaces
         class_name = parts[0]  # First part is the class name
         attributes = parts[1:]  # Rest of the parts are attributes
-
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        try:
-            new_instance = HBNBCommand.classes[class_name]()
-            for attribute in attributes:
-                key, value = attribute.split("=")
-                if type(value) is str:
-                    value = value.replace("_", " ").replace('"', '\\"')
-                # Remove quotes and convert value to appropriate data type
-                setattr(new_instance, key, eval(value))
-            new_instance.save()
-            print(new_instance.id)
-        except Exception as e:
-            print("** Error creating instance:", e)
+        # Parse key-value pairs from attributes
+        kwargs = {}
+        for attr in attributes:
+            try:
+                key, value = attr.split("=")  # Split attribute by '='
+                if value.isdigit():
+                    kwargs[key] = int(value)
+                elif value.replace('.', '', 1).isdigit():
+                    kwargs[key] = float(value)
+                else:
+                    kwargs[key] = value
+            except ValueError:
+                pass
+        print(kwargs)
 
     def help_create(self):
         """ Help information for the create method """

@@ -122,28 +122,19 @@ class HBNBCommand(cmd.Cmd):
         parts = args.split()  # Split arguments by spaces
         class_name = parts[0]  # First part is the class name
         attributes = parts[1:]  # Rest of the parts are attributes
+
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        # Parse key-value pairs from attributes
-        kwargs = {}
-        for attr in attributes:
-            try:
-                key, value = attr.split("=")  # Split attribute by '='
-                if value.isdigit():
-                    kwargs[key] = int(value)
-                elif value.replace('.', '', 1).isdigit():
-                    kwargs[key] = float(value)
-                else:
-                    kwargs[key] = value
-            except ValueError:
-                pass
-        print(kwargs)
-
-        # Create instance with provided kwargs
         try:
-            new_instance = HBNBCommand.classes[class_name](kwargs)
+            new_instance = HBNBCommand.classes[class_name]()
+            for attribute in attributes:
+                key, value = attribute.split("=")
+                # Remove quotes if value is a string
+                value = value.strip('"')
+                # Set attribute with stripped value
+                setattr(new_instance, key, value)
             new_instance.save()
             print(new_instance.id)
         except Exception as e:

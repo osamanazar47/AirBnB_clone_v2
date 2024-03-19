@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 from datetime import datetime
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -73,8 +74,8 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
-                            and type(eval(pline)) is dict:
+                    if pline[0] == '{' and pline[-1] == '}' and\
+                        type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
@@ -118,25 +119,28 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-
-        parts = args.split()  # Split arguments by spaces
+        parts = args.split(" ")  # Split arguments by spaces
         class_name = parts[0]  # First part is the class name
-        attributes = parts[1:]  # Rest of the parts are attributes
-
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
-        try:
-            new_instance = HBNBCommand.classes[class_name]()
+        if len(args) > 1:
+            attributes = parts[1:]  # Rest of the parts are attributes
+            kwargs = dict()
             for attribute in attributes:
-                key, value = attribute.split("=")
-                # Set attribute with stripped value
-                setattr(new_instance, key, value)
-            new_instance.save()
-            print(new_instance.id)
-        except Exception as e:
-            print("** Error creating instance:", e)
+                [key, value] = attribute.split("=")
+                if value[0] == '"' and value[-1] == '"':
+                    value = value[1:-1].replace('_', ' ')
+                elif '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
+                kwargs[key] = value
+        new_instance = HBNBCommand.classes[class_name]()
+        for name, val in kwargs.items():
+            setattr(new_instance, name, val)
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -199,7 +203,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -331,6 +335,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

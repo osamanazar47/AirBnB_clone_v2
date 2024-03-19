@@ -10,7 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from datetime import datetime
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -122,7 +122,6 @@ class HBNBCommand(cmd.Cmd):
         parts = args.split()  # Split arguments by spaces
         class_name = parts[0]  # First part is the class name
         attributes = parts[1:]  # Rest of the parts are attributes
-
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
@@ -140,10 +139,11 @@ class HBNBCommand(cmd.Cmd):
                     kwargs[key] = value
             except ValueError:
                 pass
+        print(kwargs)
 
         # Create instance with provided kwargs
         try:
-            new_instance = HBNBCommand.classes[class_name](**kwargs)
+            new_instance = HBNBCommand.classes[class_name](kwargs)
             new_instance.save()
             print(new_instance.id)
         except Exception as e:

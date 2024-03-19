@@ -131,8 +131,6 @@ class HBNBCommand(cmd.Cmd):
             new_instance = HBNBCommand.classes[class_name]()
             for attribute in attributes:
                 key, value = attribute.split("=")
-                # Remove quotes if value is a string
-                value = value.strip('"')
                 # Set attribute with stripped value
                 setattr(new_instance, key, value)
             new_instance.save()

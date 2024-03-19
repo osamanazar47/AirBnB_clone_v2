@@ -10,7 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from datetime import datetime
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -127,23 +127,14 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        # Parse key-value pairs from attributes
-        kwargs = {}
-        for attr in attributes:
-            try:
-                key, value = attr.split("=")  # Split attribute by '='
-                if value.isdigit():
-                    kwargs[key] = int(value)
-                elif value.replace('.', '', 1).isdigit():
-                    kwargs[key] = float(value)
-                else:
-                    kwargs[key] = value
-            except ValueError:
-                pass
-
-        # Create instance with provided kwargs
         try:
-            new_instance = HBNBCommand.classes[class_name](**kwargs)
+            new_instance = HBNBCommand.classes[class_name]()
+            for attribute in attributes:
+                key, value = attribute.split("=")
+                if type(value) is str:
+                    value = value.replace("_", " ").replace('"', '\\"')
+                # Remove quotes and convert value to appropriate data type
+                setattr(new_instance, key, eval(value))
             new_instance.save()
             print(new_instance.id)
         except Exception as e:

@@ -3,8 +3,9 @@
  storage for hbnb clone"""
 from os import getenv
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import create_engine, MetaData
-from models.base_model import BaseModel, Base
+from sqlalchemy import (create_engine)
+from sqlalchemy.ext.declarative import declarative_base
+from models.base_model import Base
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -17,6 +18,7 @@ class DBStorage:
     """DataBase Storage"""
     __engine = None
     __session = None
+
     def __init__(self):
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'\
                                       .format(getenv("HBNB_MYSQL_USER"),
@@ -26,25 +28,22 @@ class DBStorage:
                                               pool_pre_ping=True)
         if getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
-        else:
-            pass
 
     def all(self, cls=None):
         """retrive all objects"""
         object_list = dict()
         if cls:
-            res = self.__session.query(cls).all()
+            if type(cls) is str:
+                cls = eval(cls)
+            res = self.__session.query(cls)
             for row in res:
                 key = "{}.{}".format(type(row).__name__, row.id)
                 object_list[key] = row
             return object_list
         else:
-
             class_list = [State, City, User, Place, Review, Amenity]
             for class_name in class_list:
                 res = self.__session.query(class_name)
-            for class_name in [User, State, City, Amenity, Place, Review]:
-                res = self.__session.query(class_name).all()
                 for row in res:
                     key = "{}.{}".format(type(row).__name__, row.id)
                     object_list[key] = row
@@ -66,7 +65,11 @@ class DBStorage:
     def reload(self):
         """reload all tables"""
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(bind=self.__engine,
+        Sess = sessionmaker(bind=self.__engine,
                                expire_on_commit=False)
-        self.__session = scoped_session(Session)
+        Session = scoped_session(Sess)
+        self.__session = Session()
 
+    def close(self):
+        """Closes the session"""
+        self.__session.close()

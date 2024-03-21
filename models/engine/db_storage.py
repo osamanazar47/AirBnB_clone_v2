@@ -1,10 +1,16 @@
 #!/usr/bin/python3
 """This module defines a class to manage DataBase
  storage for hbnb clone"""
-import os
+from os import getenv
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine, MetaData
-from console import classes
+from models.base_model import BaseModel, Base
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class DBStorage:
@@ -13,15 +19,15 @@ class DBStorage:
     __session = None
     def __init__(self):
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'\
-                                      .format(os.environ['HBNB_MYSQL_USER'],
-                                              os.environ['HBNB_MYSQL_PWD'],
-                                              os.environ['HBNB_MYSQL_HOST'],
-                                              os.environ['HBNB_MYSQL_DB']),
+                                      .format(getenv("HBNB_MYSQL_USER"),
+                                              getenv("HBNB_MYSQL_PWD"),
+                                              getenv("HBNB_MYSQL_HOST"),
+                                              getenv("HBNB_MYSQL_DB")),
                                               pool_pre_ping=True)
-        if os.environ['HBNB_ENV'] == "test":
-            metadata = MetaData()
-            metadata.reflect()
-            metadata.drop_all()
+        if getenv("HBNB_ENV") == "test":
+            Base.metadata.drop_all(self.__engine)
+        else:
+            pass
 
     def all(self, cls=None):
         """retrive all objects"""
@@ -33,7 +39,7 @@ class DBStorage:
                 object_list[key] = row
             return object_list
         else:
-            for class_name in classes:
+            for class_name in [User, State, City, Amenity, Place, Review]:
                 res = self.__session.query(class_name).all()
                 for row in res:
                     key = "{}.{}".format(type(row).__name__, row.id)
@@ -55,16 +61,8 @@ class DBStorage:
 
     def reload(self):
         """reload all tables"""
-        from models.base_model import BaseModel, Base
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine,
                                expire_on_commit=False)
-        ScopedSession = scoped_session(Session)
-        self.__session = ScopedSession()
+        self.__session = scoped_session(Session)
+

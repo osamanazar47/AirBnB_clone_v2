@@ -4,7 +4,13 @@
 import os
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine, MetaData
-from console import classes
+from models.base_model import BaseModel, Base
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class DBStorage:
@@ -33,8 +39,9 @@ class DBStorage:
                 object_list[key] = row
             return object_list
         else:
-            for class_name in classes:
-                res = self.__session.query(class_name).all()
+            class_list = [State, City, User, Place, Review, Amenity]
+            for class_name in class_list:
+                res = self.__session.query(class_name)
                 for row in res:
                     key = "{}.{}".format(type(row).__name__, row.id)
                     object_list[key] = row

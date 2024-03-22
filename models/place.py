@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from sqlalchemy.ext.declarative import declarative_base
+from models.review import Review
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, Table
 from sqlalchemy import Float, ForeignKey
@@ -20,7 +21,7 @@ place_amenity = Table("place_amenity", Base.metadata,
                              primary_key=True,
                              nullable=False))
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)

@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from fabric.api import local
 
+
 def do_pack():
     """Defining the function do_pack which will archive all the contents
     of the web_static directory"""

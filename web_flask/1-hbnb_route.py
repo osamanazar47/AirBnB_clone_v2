@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 """Starts a Flask web application
 - the application listens on 0.0.0.0 port 5000
+Functtions:
+	hello: displays Hello HBNB
+	hbnb: displays HBNB
 """
 from flask import Flask
 

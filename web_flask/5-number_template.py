@@ -41,7 +41,7 @@ def is_integer(n):
     return "{} is a number".format(n)
 
 
-@app.route('/number_template/', strict_slashes=False)
+@app.route('/number_template', strict_slashes=False)
 @app.route('/number_template/<int:n>', strict_slashes=False)
 def number_temp(n):
     """Displays (Number: n) only if n is integer using templates"""

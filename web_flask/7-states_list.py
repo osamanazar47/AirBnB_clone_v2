@@ -3,6 +3,9 @@
 A script for starting web application
 - the web app is listening o 0.0.0.0, port 5000
 - fetches data from the storage engine
+- removes the current SQLAlchemy session after each request
+- routes to /states_list to display a list of all states objects present
+in DBStorage sorted by name
 """
 from models import storage
 from flask import Flask, render_template

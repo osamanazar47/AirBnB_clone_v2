@@ -12,5 +12,6 @@ def hello():
     """a function that displays Hello HBNB"""
     return "Hello HBNB!"
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

@@ -34,5 +34,6 @@ def python_text(text='is cool'):
     """Displays Python followed by the value of the text variable"""
     return "Python {}".format(text.replace('_', ' '))
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

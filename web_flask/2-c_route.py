@@ -27,5 +27,6 @@ def c_text(text):
     """Displays C followed by the value of the text variable"""
     return "C {}".format(text.replace('_', ' '))
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

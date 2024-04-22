@@ -25,7 +25,8 @@ def states_list():
 @app.route('/states/<id>', strict_slashes=False)
 def state__id_list(id):
     """
-    Displays an HTML page with a list of all cities in a specific state objects in DBStorage.
+    Displays an HTML page with a list of all cities in
+    a specific state objects in DBStorage.
     """
     for state in storage.all("State").values():
         if state.id == id:
